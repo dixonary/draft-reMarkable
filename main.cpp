@@ -2,6 +2,7 @@
 #include <QtQuick>
 #include <QtPlugin>
 #include "backend.h"
+#include "mainview.h"
 
 Q_IMPORT_PLUGIN(QsgEpaperPlugin)
 
@@ -12,7 +13,7 @@ int main(int argc, char *argv[])
     qputenv("QT_QPA_EVDEV_TOUCHSCREEN_PARAMETERS", "rotate=180");
 
     QGuiApplication app(argc, argv);
-    QQuickView view;
+    MainView view;
     // exit gracefully on kill signal
     QObject::connect(view.engine(),SIGNAL(quit()),&app,SLOT(quit()));
 
