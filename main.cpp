@@ -14,6 +14,7 @@ int main(int argc, char *argv[])
     // exit gracefully on kill signal
     QObject::connect(view.engine(),SIGNAL(quit()),&app,SLOT(quit()));
 
+    view.rootContext()->setContextProperty("screenGeometry", app.primaryScreen()->geometry());
     view.engine()->addImportPath(QStringLiteral(DEPLOYMENT_PATH));
     view.setSource(QDir(DEPLOYMENT_PATH).filePath("qml/Main.qml"));
     view.show();
