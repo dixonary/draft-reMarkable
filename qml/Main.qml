@@ -16,4 +16,10 @@ Rectangle {
         anchors.horizontalCenter: page.horizontalCenter
         font.pointSize: 24; font.bold: true
     }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        onClicked: backend.handleClick()
+    }
 }

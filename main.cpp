@@ -1,6 +1,8 @@
 #include <QtGui>
 #include <QtQuick>
 #include <QtPlugin>
+#include "backend.h"
+
 Q_IMPORT_PLUGIN(QsgEpaperPlugin)
 
 int main(int argc, char *argv[])
@@ -15,8 +17,12 @@ int main(int argc, char *argv[])
     QObject::connect(view.engine(),SIGNAL(quit()),&app,SLOT(quit()));
 
     view.rootContext()->setContextProperty("screenGeometry", app.primaryScreen()->geometry());
+    Backend backend;
+    view.rootContext()->setContextProperty("backend", &backend);
     view.engine()->addImportPath(QStringLiteral(DEPLOYMENT_PATH));
     view.setSource(QDir(DEPLOYMENT_PATH).filePath("qml/Main.qml"));
     view.show();
+
+    qDebug() << "view shown";
     return app.exec();
 }
