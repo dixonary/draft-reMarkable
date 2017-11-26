@@ -32,3 +32,15 @@ void MainView::mouseReleaseEvent(QMouseEvent* me)
     qDebug() << me->pos();
     QQuickView::mouseReleaseEvent(me);
 }
+
+void MainView::tabletEvent(QTabletEvent* te)
+{
+    qDebug() << Q_FUNC_INFO;
+    qDebug() << te;
+}
+
+void MainView::touchEvent(QTouchEvent* te)
+{
+    qDebug() << Q_FUNC_INFO;
+    qDebug() << te;
+}

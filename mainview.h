@@ -3,8 +3,6 @@
 
 #include <QObject>
 #include <QQuickView>
-#include <QKeyEvent>
-#include <QMouseEvent>
 #include <QDebug>
 
 class MainView : public QQuickView
@@ -16,6 +14,8 @@ public slots:
     void mouseMoveEvent(QMouseEvent* me);
     void mousePressEvent(QMouseEvent* me);
     void mouseReleaseEvent(QMouseEvent* me);
+    void tabletEvent(QTabletEvent* te);
+    void touchEvent(QTouchEvent* te);
 };
 
 #endif // MAINVIEW_H

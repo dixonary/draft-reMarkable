@@ -7,6 +7,7 @@ Rectangle {
     height: 200
     x: screenGeometry.width - page.width
     y: screenGeometry.height - page.height
+    z: 10
     color: "lightgray"
 
     Text {
@@ -20,6 +21,11 @@ Rectangle {
     MouseArea {
         id: mouseArea
         anchors.fill: parent
-        onClicked: backend.handleClick()
+        onClicked: console.log("QML Mouse event");
+    }
+
+    MultiPointTouchArea {
+        anchors.fill: parent
+        onTouchUpdated: console.log("QML Touch event");
     }
 }
