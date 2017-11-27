@@ -12,31 +12,68 @@ Rectangle {
         hoverEnabled: true
 
         onClicked: {
-            clock.location.x = mouseX;
-            clock.location.y = mouseY;
-            console.log(mouseX);
-        }
-        onPressed: {
-            clock.clickStatus = "pressed";
-        }
-        onReleased: {
-            clock.clickStatus = "released";
+            console.log("big: click detected");
         }
     }
     Rectangle {
-        id: clock
-        width: 500
+        id: infoRect
+        function toggleInfo() {
+            infoRect.visible = !infoRect.visible;
+            console.log("info set to " + infoRect.visible);
+            // bad way to refresh the item
+            clock.visible = false
+            clock.visible = true
+            view.requestUpdate();
+        }
+        width: 800
         height: 500
-        y: screenGeometry.height- clock.height
-        x: screenGeometry.width - clock.width
-        
-        property string timeStr
-        property point location
-        property string clickStatus
+        anchors.centerIn: parent
+        border.width: 10
 
         Text {
+        anchors {
+            fill: parent
+            margins: 5
+        }
+        id: info
+        text: (
+            "pos: (" 
+            + ma.mouseX.toFixed(2) + "," + ma.mouseY.toFixed(2) + ")"
+            + "\n small Area is pressed: " + maSmall.pressed
+            + "\n containsPress: " + ma.containsPress
+        )
+    }
+    }
+    Rectangle {
+        id: clock
+        width: 200
+        height: 50
+        y: screenGeometry.height- clock.height
+        x: screenGeometry.width - clock.width
+        color: !infoRect.visible ? "white" : "black"
+        border.width: 2
+        border.color: infoRect.visible ? "white" : "black"
+        
+
+        MouseArea {
+            id: maSmall
+            anchors.fill: parent
+            hoverEnabled: true
+            onClicked: console.log("small: click detected")
+            onPressAndHold: {
+                infoRect.toggleInfo();
+                console.log("small: HOLD");
+            }
+        }
+
+        Text {
+            color: infoRect.visible ? "white" : "black"
             id: time
-            text: clock.timeStr + "\n" + clock.location + "\n" + clock.clickStatus
+            anchors {
+                left: parent.left
+                leftMargin: 8
+            }
+            text: ""
         }
 
         Timer {
@@ -44,7 +81,7 @@ Rectangle {
             running: true
             repeat: true
             onTriggered: {
-                parent.timeStr = MainJS.displayDateAsHHMMSS();
+                time.text = MainJS.displayDateAsHHMMSS();
             }
         }
     }
