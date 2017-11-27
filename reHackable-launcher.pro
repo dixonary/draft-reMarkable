@@ -25,6 +25,10 @@ DEPLOYMENT_PATH = /usr/share/$$TARGET
 DEFINES += DEPLOYMENT_PATH=\\\"$$DEPLOYMENT_PATH\\\"
 DEFINES += QML_FOLDER=\\\"qml\\\"
 
+js.files = js/Main.js
+js.path == $$DEPLOYMENT_PATH/js
+INSTALLS += js
+
 qml.files = qml/Main.qml
 qml.path == $$DEPLOYMENT_PATH/qml
 INSTALLS += qml
@@ -36,3 +40,7 @@ QML_IMPORT_PATH =
 
 target.path = /usr/bin
 INSTALLS += target
+
+DISTFILES += \
+    js/Main.js
+
