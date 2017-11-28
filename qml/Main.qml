@@ -23,7 +23,6 @@ Rectangle {
             // bad way to refresh the item
             clock.visible = false
             clock.visible = true
-            view.requestUpdate();
         }
         width: 800
         height: 500
