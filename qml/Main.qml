@@ -3,85 +3,84 @@ import "../js/Main.js" as MainJS
 
 Rectangle {
     id: canvas
-    width: screenGeometry.width
-    height: screenGeometry.height
+    width: 1404
+    height: 1872
 
-    MouseArea {
-        id: ma
-        anchors.fill: parent
-        hoverEnabled: true
-
-        onClicked: {
-            console.log("big: click detected");
+    Behavior on y {
+        NumberAnimation {
+            property:"y"
+            to:0
+            duration:1000
         }
+    }
+
+    Text {
+        id: heading
+        anchors.left:parent.left
+        anchors.right:parent.right
+        text: " <font size=8> draft</font> launcher"
+        textFormat: Text.RichText
+        horizontalAlignment: Text.AlignHCenter
+        font.pixelSize: 80
+        font.family:"Noto Serif"
+        font.italic:true
+    }
+
+    Text {
+        id: credit
+        anchors.right:parent.right
+        anchors.bottom:parent.bottom
+        anchors.margins: {bottom:10}
+        text: qsTr("draft v0.2 created by @dixonary_")
+        font.pixelSize: 30
+        font.family:"Noto Serif"
+        font.italic:true
+    }
+
+    Text {
+        id: optionsHeading
+        anchors.left:parent.left
+        anchors.right:parent.right
+        anchors.margins:50
+        horizontalAlignment:Text.AlignLeft
+        font.pixelSize: 40
+        font.family:"Noto Serif"
+        font.italic:true
+        text: "Available Options"
+        y: heading.y + heading.height + 50
     }
     Rectangle {
-        id: infoRect
-        function toggleInfo() {
-            infoRect.visible = !infoRect.visible;
-            console.log("info set to " + infoRect.visible);
-            // bad way to refresh the item
-            clock.visible = false
-            clock.visible = true
-        }
-        width: 800
-        height: 500
-        anchors.centerIn: parent
-        border.width: 10
+        id:optionsArea
+        objectName: "optionsArea"
+        y:optionsHeading.y + optionsHeading.height + 10
+        anchors.left:parent.left
+        anchors.right:parent.right
+        height:credit.y - y - 5
 
-        Text {
-        anchors {
-            fill: parent
-            margins: 5
+        Rectangle {
+            id:topBar
+            color: "black"
+            anchors.left:parent.left
+            anchors.right:parent.right
+            anchors.margins: 50
+            anchors.topMargin: 0
+            height:5
         }
-        id: info
-        text: (
-            "pos: (" 
-            + ma.mouseX.toFixed(2) + "," + ma.mouseY.toFixed(2) + ")"
-            + "\n small Area is pressed: " + maSmall.pressed
-            + "\n containsPress: " + ma.containsPress
-        )
-    }
-    }
-    Rectangle {
-        id: clock
-        width: 200
-        height: 50
-        y: screenGeometry.height- clock.height
-        x: screenGeometry.width - clock.width
-        color: !infoRect.visible ? "white" : "black"
-        border.width: 2
-        border.color: infoRect.visible ? "white" : "black"
-        
+        Rectangle {
+            id:bottomBar
+            color: "black"
+            anchors.left:parent.left
+            anchors.right:parent.right
+            anchors.bottom:parent.bottom
+            anchors.margins: 50
+            anchors.bottomMargin:0
+            height:5
+        }
 
         MouseArea {
-            id: maSmall
-            anchors.fill: parent
-            hoverEnabled: true
-            onClicked: console.log("small: click detected")
-            onPressAndHold: {
-                infoRect.toggleInfo();
-                console.log("small: HOLD");
-            }
+            anchors.fill:parent
         }
 
-        Text {
-            color: infoRect.visible ? "white" : "black"
-            id: time
-            anchors {
-                left: parent.left
-                leftMargin: 8
-            }
-            text: ""
-        }
-
-        Timer {
-            interval: 500
-            running: true
-            repeat: true
-            onTriggered: {
-                time.text = MainJS.displayDateAsHHMMSS();
-            }
-        }
     }
+
 }

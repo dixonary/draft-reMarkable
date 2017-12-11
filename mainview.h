@@ -1,5 +1,4 @@
-#ifndef MAINVIEW_H
-#define MAINVIEW_H
+#pragma once
 
 #include <QObject>
 #include <QQuickView>
@@ -17,5 +16,3 @@ public slots:
     void tabletEvent(QTabletEvent* te);
     void touchEvent(QTouchEvent* te);
 };
-
-#endif // MAINVIEW_H
