@@ -1,6 +1,8 @@
 # draft-reMarkable
 A launcher for the reMarkable tablet, which wraps around the standard interface.
 
+[Draft v0.2 video](https://www.youtube.com/watch?v=VEngMK54SV4)
+
 * * *
 
 ## Setting up draft
