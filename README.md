@@ -4,6 +4,7 @@ A launcher for the reMarkable tablet, which wraps around the standard interface.
 * * *
 
 ## Setting up draft
+(nb. You fiddle with the internal system of your reMarkable at your own risk! Here be dragons.)
 
 ### 1. Deploy draft
 This should simply be a case of opening up qtcreator, loading up the project with the normal reMarkable target, and hitting "run".
