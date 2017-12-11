@@ -5,7 +5,7 @@ A launcher for the reMarkable tablet, which wraps around the standard interface.
 
 * * *
 
-## Setting up draft
+## Set-up
 (nb. You fiddle with the internal system of your reMarkable at your own risk! Here be dragons.)
 
 ### 1. Deploy draft
@@ -23,7 +23,7 @@ As well as deploying the program, this will also populate `/etc/draft` with some
 
 [This terminal](https://github.com/dixonary/fingerterm-reMarkable) runs on the reMarkable and lets you change some config things without needing to SSH in! It's one of the default config options but you can remove that if you are't wanting to use it.
 
-### 2. Enable draft at startup
+### 2. Enable at startup
 You need to replace the normal xochitl startup with draft. This is done with the following two lines via SSH:
 
 ```bash
