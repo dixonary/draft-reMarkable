@@ -6,6 +6,9 @@ A launcher for the reMarkable tablet, which wraps around the standard interface.
 * * *
 
 ## Set-up
+
+**This information is quite vague. Reddit user /u/prpletentacle wrote up their process for setting up Draft+rM, with the Plato app, here: https://www.reddit.com/r/RemarkableTablet/comments/bkbps9/how_to_install_plato_reader_and_add_it_to_draft/?st=jvp0mqus&sh=0651e353**
+
 (nb. You fiddle with the internal system of your reMarkable at your own risk! Here be dragons.)
 
 ### 1. Deploy draft
