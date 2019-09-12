@@ -23,7 +23,7 @@ public:
     bool read_directory(const std::string name, std::vector<std::string>& files);
 private:
     void error(std::string text);
-    void createOption(OptionItem &option, size_t index);
+    void createOption(OptionItem &option, int index);
 
     MainView* mainView;
     QQuickItem* optionsView;

@@ -14,17 +14,7 @@ Rectangle {
         }
     }
 
-    Text {
-        id: heading
-        anchors.left:parent.left
-        anchors.right:parent.right
-        text: " <font size=8> draft</font> launcher"
-        textFormat: Text.RichText
-        horizontalAlignment: Text.AlignHCenter
-        font.pixelSize: 80
-        font.family:"Noto Serif"
-        font.italic:true
-    }
+
 
     Text {
         id: credit
@@ -80,7 +70,5 @@ Rectangle {
         MouseArea {
             anchors.fill:parent
         }
-
     }
-
 }

@@ -41,11 +41,6 @@ bool Handler::eventFilter(QObject* obj, QEvent* event)
 
 void Handler::handleEvent() {
 
-    std::cout << "Setting termfile /etc/draft/.terminate" << std::endl;
-    std::ofstream termfile;
-    termfile.open("/etc/draft/.terminate");
-    termfile << term << std::endl;
-
     std::cout << "Running command " << link << "..." << std::endl;
     system((link).c_str());
 

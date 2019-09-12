@@ -1,5 +1,10 @@
 <RCC>
     <qresource prefix="/">
-        <file>Main.qml</file>
+        <file>js/Main.js</file>
+        <file>qml/Main.qml</file>
+        <file>qml/MenuItem.qml</file>
+        <file>extra-files/draft/icons/fingerterm.png</file>
+        <file>extra-files/draft/icons/power.png</file>
+        <file>extra-files/draft/icons/xochitl.png</file>
     </qresource>
 </RCC>

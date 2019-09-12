@@ -1,5 +1,4 @@
 import QtQuick 2.0
-import "../js/Main.js" as MainJS
 
 Rectangle {
     property int itemNumber: 0
@@ -11,8 +10,8 @@ Rectangle {
 
 
     y: itemNumber * 200 + 30
-    anchors.left:parent.left
-    anchors.right:parent.right
+    anchors.left: parent.left
+    anchors.right: parent.right
     height:180
     anchors.margins:70
     border.color:"#cccccc"

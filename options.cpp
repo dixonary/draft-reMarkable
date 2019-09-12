@@ -7,7 +7,9 @@
 #include <QtQuick>
 #include <algorithm>
 
-const std::string configDir = "/etc/draft";
+
+//TODO: do not hard code
+const std::string configDir = "/home/root/.draft/";
 
 // Create options and add them to the screen.
 Options::Options(MainView* mainView, QGuiApplication* app) :
@@ -21,7 +23,7 @@ Options::Options(MainView* mainView, QGuiApplication* app) :
     // If the config directory doesn't exist,
     // then print an error and stop.
     if(!Options::read_directory(configDir, filenames)) {
-        Options::error("Failed to read directory - it does not exist.");
+        Options::error("Failed to read directory - it does not exist.> " + configDir);
         return;
     }
 
@@ -71,14 +73,14 @@ Options::Options(MainView* mainView, QGuiApplication* app) :
 
 }
 
-void Options::createOption(OptionItem &option, size_t index) {
+void Options::createOption(OptionItem &option, int index) {
 
     QQuickView* opt  = new QQuickView();
-    opt->setSource(QDir(DEPLOYMENT_PATH).filePath("qml/MenuItem.qml"));
+    opt->setSource(QUrl("qrc:/qml/MenuItem.qml"));
     opt->show();
 
-    QQuickItem*    root = opt->rootObject();
-    root->setProperty("itemNumber", QVariant(index));
+    QQuickItem* root = opt->rootObject();
+    root->setProperty("itemNumber", index);
     root->setParentItem(optionsView);
 
     root->setProperty("t_name",QVariant(option.name.c_str()));
@@ -102,6 +104,7 @@ void Options::error(std::string text) {
 bool Options::read_directory(const std::string name,
                              std::vector<std::string>& filenames)
 {
+	//todo: use QDir
     DIR* dirp = opendir(name.c_str());
     if(dirp == nullptr) {
         return false;

@@ -1,8 +1,16 @@
 QT += quick
+QT -= GLES
 CONFIG += c++11
-LIBS += -lqsgepaper
+
+linux-oe-g++ {
+    message("rm")
+    LIBS += -lqsgepaper
+    DEFINES += RM
+}
 
 TARGET = draft
+DESTDIR = bin
+OBJECTS_DIR = obj
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -25,39 +33,10 @@ SOURCES += main.cpp \
     options.cpp \
     handler.cpp
 
-DEPLOYMENT_PATH = /usr/share/$$TARGET
-DEFINES += DEPLOYMENT_PATH=\\\"$$DEPLOYMENT_PATH\\\"
-DEFINES += QML_FOLDER=\\\"qml\\\"
-
-js.files = js/Main.js
-js.path == $$DEPLOYMENT_PATH/js
-INSTALLS += js
-
-qml.files = qml/Main.qml
-qml.files+= qml/MenuItem.qml
-qml.path == $$DEPLOYMENT_PATH/qml
-INSTALLS += qml
-
-
-# Installs /etc/draft and /lib/systemd/system/draft.service.
-configFiles.files = extra-files/draft
-configFiles.path  = /etc/
-INSTALLS += configFiles
-
-service.files = extra-files/draft.service
-service.path=/lib/systemd/system/
-INSTALLS += service
-
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
 
-
-
-target.path = /usr/bin
-INSTALLS += target
-
-DISTFILES += \
-    js/Main.js \
-    qml/MenuItem.qml
+RESOURCES += \
+    qml.qrc
 

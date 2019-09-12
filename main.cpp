@@ -4,16 +4,17 @@
 #include "mainview.h"
 #include "options.h"
 #include "handler.h"
-
+#ifdef RM
 Q_IMPORT_PLUGIN(QsgEpaperPlugin)
+#endif
 
 int main(int argc, char *argv[])
 {
+#ifdef RM
     qputenv("QMLSCENE_DEVICE", "epaper");
     qputenv("QT_QPA_PLATFORM", "epaper:enable_fonts");
     qputenv("QT_QPA_EVDEV_TOUCHSCREEN_PARAMETERS", "rotate=180");
-
-    system("/usr/bin/button-capture &");
+#endif
 
     QGuiApplication app(argc, argv);
     MainView view;
@@ -21,8 +22,7 @@ int main(int argc, char *argv[])
     srand(time(NULL));
 
     view.rootContext()->setContextProperty("screenGeometry", app.primaryScreen()->geometry());
-    view.engine()->addImportPath(QStringLiteral(DEPLOYMENT_PATH));
-    view.setSource(QDir(DEPLOYMENT_PATH).filePath("qml/Main.qml"));
+    view.setSource(QUrl("qrc:/qml/Main.qml"));
     view.show();
 
     Options options(&view, &app);
