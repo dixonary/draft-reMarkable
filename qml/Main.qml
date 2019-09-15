@@ -25,15 +25,13 @@ Window {
 
     Timer{
         id: timer
-        interval: 500
+        interval: 300
         repeat: false
 
         onTriggered:
         {
             canvas.show()
-            canvas.update()
             r.update()
-
             console.log("update trigger")
         }
     }
@@ -79,8 +77,7 @@ Window {
                     canvas.visible = false
                     //canvas.opacity = 0
                     model.modelData.execute()
-                    canvas.visible = true
-                    r.update()
+                    timer.start()
                 }
 
             }
