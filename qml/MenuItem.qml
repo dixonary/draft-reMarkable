@@ -9,11 +9,6 @@ Rectangle {
     //property alias t_imgFile: imgLoader.src
 
 
-    y: itemNumber * 200 + 30
-    anchors.left: parent.left
-    anchors.right: parent.right
-    height:180
-    anchors.margins:70
     border.color:"#cccccc"
     border.width: 3
 

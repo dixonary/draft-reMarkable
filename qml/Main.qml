@@ -1,74 +1,114 @@
-import QtQuick 2.0
-import "../js/Main.js" as MainJS
+import QtQuick 2.11
+import QtQuick.Controls 2.0
+import QtQuick.Window 2.11
+import QtQuick.Layouts 1.3
 
-Rectangle {
+Window {
+
     id: canvas
-    width: 1404
-    height: 1872
+    width: screenGeometry.width
+    height: screenGeometry.height
+    visible: true
+    MouseArea {
+        anchors.fill: parent
+        onClicked: {
+            console.log("window")
+            //popup.open()
+        }
 
-    Behavior on y {
-        NumberAnimation {
-            property:"y"
-            to:0
-            duration:1000
+    }
+
+
+    Rectangle{
+        id:r
+        anchors.fill: parent
+
+    Timer{
+        id: timer
+        interval: 500
+        repeat: false
+
+        onTriggered:
+        {
+            canvas.show()
+            canvas.update()
+            r.update()
+
+            console.log("update trigger")
         }
     }
+    Timer {
+        id:timer2
+        repeat: false
+        interval: 100
+        onTriggered: {
+            popup.close()
+        }
 
 
-
-    Text {
-        id: credit
-        anchors.right:parent.right
-        anchors.bottom:parent.bottom
-        anchors.margins: {bottom:10}
-        text: qsTr("draft v0.2 created by @dixonary_")
-        font.pixelSize: 30
-        font.family:"Noto Serif"
-        font.italic:true
     }
 
-    Text {
-        id: optionsHeading
-        anchors.left:parent.left
-        anchors.right:parent.right
-        anchors.margins:50
-        horizontalAlignment:Text.AlignLeft
-        font.pixelSize: 40
-        font.family:"Noto Serif"
-        font.italic:true
-        text: "Available Options"
-        y: heading.y + heading.height + 50
-    }
-    Rectangle {
+    ListView {
+
         id:optionsArea
         objectName: "optionsArea"
-        y:optionsHeading.y + optionsHeading.height + 10
-        anchors.left:parent.left
-        anchors.right:parent.right
-        height:credit.y - y - 5
+        spacing: 10
+        anchors.fill: parent
 
-        Rectangle {
-            id:topBar
-            color: "black"
-            anchors.left:parent.left
-            anchors.right:parent.right
-            anchors.margins: 50
-            anchors.topMargin: 0
-            height:5
+        interactive: false
+
+        model: options
+
+        delegate: Rectangle{
+            height:200
+            border.color: "black"
+            border.width: 1
+            width: parent.width - 100
+
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            Text{
+                anchors.margins: 10
+                anchors.left: parent.left
+                text:model.modelData.name
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    console.log("tap")
+                    canvas.visible = false
+                    //canvas.opacity = 0
+                    model.modelData.execute()
+                    canvas.visible = true
+                    r.update()
+                }
+
+            }
         }
-        Rectangle {
-            id:bottomBar
-            color: "black"
-            anchors.left:parent.left
-            anchors.right:parent.right
-            anchors.bottom:parent.bottom
-            anchors.margins: 50
-            anchors.bottomMargin:0
-            height:5
+
+
+
+
+    }
+
+    Popup {
+        id:popup
+        width: parent.width
+        height: parent.height
+
+        Text {
+            anchors.centerIn: parent
+            text: "redraw"
         }
 
         MouseArea {
             anchors.fill:parent
+            onClicked: {
+                popup.close()
+            }
+
         }
+
     }
-}
+
+}}

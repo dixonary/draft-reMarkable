@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>js/Main.js</file>
         <file>qml/Main.qml</file>
         <file>qml/MenuItem.qml</file>
         <file>extra-files/draft/icons/fingerterm.png</file>

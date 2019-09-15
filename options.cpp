@@ -1,46 +1,55 @@
 #include "options.h"
-#include "handler.h"
 #include <dirent.h>
 #include <string>
 #include <vector>
 #include <iostream>
-#include <QtQuick>
 #include <algorithm>
-
-
-//TODO: do not hard code
-const std::string configDir = "/home/root/.draft/";
+#include <QIODevice>
+#include <QFile>
+#include <QTextStream>
+#include <QStandardPaths>
+#include <QDir>
 
 // Create options and add them to the screen.
-Options::Options(MainView* mainView, QGuiApplication* app) :
-    mainView(mainView),
-    optionsView(mainView->rootObject()->findChild<QQuickItem*>("optionsArea")),
-    app(app)
+Options::Options()
 {
 
-    std::vector<std::string> filenames;
 
+}
+
+QList<QObject*> Options::GetOptions(){
+    QString configDir = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    std::vector<std::string> filenames;
+    QList<QObject*> result;
     // If the config directory doesn't exist,
     // then print an error and stop.
-    if(!Options::read_directory(configDir, filenames)) {
-        Options::error("Failed to read directory - it does not exist.> " + configDir);
-        return;
+
+
+    QDir directory(configDir);
+    if (!directory.exists() || configDir.isEmpty())
+    {
+        Options::error("Failed to read directory - it does not exist.> " + configDir.toStdString());
+        return result;
     }
 
-    std::sort(filenames.begin(), filenames.end());
 
-    for(std::string f : filenames) {
+    directory.setFilter( QDir::Files | QDir::NoSymLinks | QDir::NoDot | QDir::NoDotDot);
+
+    auto images = directory.entryInfoList(QDir::NoFilter,QDir::SortFlag::Name);
+    foreach(QFileInfo fi, images) {
+        auto f = fi.absoluteFilePath().toStdString();
 
         std::cout << "parsing file " << f << std::endl;
-        QFile file((configDir + "/" + f).c_str());
+
+        QFile file(fi.absoluteFilePath());
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            Options::error("Couldn't find the file " + f + ".");
-            break;
+            Options::error("Couldn't find the file " + f+ ".");
+            continue;
         }
 
         QTextStream in(&file);
 
-        OptionItem opt;
+        OptionItem *opt= new OptionItem();
 
         while (!in.atEnd()) {
             std::string line = in.readLine().toStdString();
@@ -50,11 +59,15 @@ Options::Options(MainView* mainView, QGuiApplication* app) :
                     std::string lhs = line.substr(0,sep);
                     std::string rhs = line.substr(sep+1);
 
-                    if     (lhs == "name")     opt.name    = rhs;
-                    else if(lhs == "desc")     opt.desc    = rhs;
-                    else if(lhs == "imgFile")  opt.imgFile = rhs;
-                    else if(lhs == "call")     opt.call    = rhs;
-                    else if(lhs == "term")     opt.term    = rhs;
+                    if     (lhs == "name")     {
+                        if (rhs == ""){
+                            continue;
+                        }
+                                opt->setProperty("name", rhs.c_str());
+                    }
+                    else if(lhs == "desc")  opt->setProperty("desc", rhs.c_str());
+                    else if(lhs == "call")  opt->setProperty("call", rhs.c_str());
+
                     else std::cout << "ignoring unknown parameter \"" << line
                                    << "\" in file \"" << f << "\"" << std::endl;
                 }
@@ -64,60 +77,17 @@ Options::Options(MainView* mainView, QGuiApplication* app) :
                           << "\" in file \"" << f << "\"" << std::endl;
             }
         }
-
-        if(opt.call == "" || opt.term == "") continue;
-        createOption(opt, optionList.size());
-        optionList.push_back(opt);
+        if(opt->ok())
+            result.append(opt);
 
     }
-
+    return result;
 }
 
-void Options::createOption(OptionItem &option, int index) {
 
-    QQuickView* opt  = new QQuickView();
-    opt->setSource(QUrl("qrc:/qml/MenuItem.qml"));
-    opt->show();
-
-    QQuickItem* root = opt->rootObject();
-    root->setProperty("itemNumber", index);
-    root->setParentItem(optionsView);
-
-    root->setProperty("t_name",QVariant(option.name.c_str()));
-    root->setProperty("t_desc",QVariant(option.desc.c_str()));
-    root->setProperty("t_imgFile",QVariant(("file://"+configDir+"/icons/"+option.imgFile+".png").c_str()));
-
-    QObject* mouseArea = root->children().at(0);
-    Handler* handler = new Handler(option.call, option.term, app, mainView, mouseArea);
-    root->children().at(0)->installEventFilter(handler);
-
-    option.object = opt;
-    option.handler = handler;
-}
 
 void Options::error(std::string text) {
-    std::cout << "!! Error: " << text << std::endl;
+    std::cerr << "!! Error: " << text << std::endl;
 }
 
 
-// Stolen shamelessly from Martin Broadhurst
-bool Options::read_directory(const std::string name,
-                             std::vector<std::string>& filenames)
-{
-	//todo: use QDir
-    DIR* dirp = opendir(name.c_str());
-    if(dirp == nullptr) {
-        return false;
-    }
-
-    struct dirent * dp;
-    while ((dp = readdir(dirp)) != NULL) {
-        std::string dn = dp->d_name;
-
-        if(dn == "." || dn == ".."|| dn == "icons") continue;
-
-        filenames.push_back(dn);
-    }
-    closedir(dirp);
-    return true;
-}
