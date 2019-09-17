@@ -51,28 +51,25 @@ Window {
 
             ListView {
                 id:optionsArea
-                objectName: "optionsArea"
-                spacing: 10
+                spacing: 15
                 anchors.fill:parent
                 interactive: false
                 model: options
 
                 delegate: Rectangle{
-                    height: 200
+                    height:150
                     border.color: "black"
                     border.width: 2
 
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    anchors.margins: 20
+                    anchors.margins: 10
 
                     Text{
-                        font.family:"Noto Serif"
                         font.pixelSize: 70
-                        font.italic: true
                         anchors.left: parent.left
                         anchors.top: parent.top
-                        anchors.margins: 20
+                        anchors.margins: 10
                         text:model.modelData.name
                     }
 

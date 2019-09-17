@@ -9,6 +9,8 @@
 #include <QTextStream>
 #include <QStandardPaths>
 #include <QDir>
+#include <QSet>
+#include <QDebug>
 
 // Create options and add them to the screen.
 Options::Options()
@@ -50,34 +52,21 @@ QList<QObject*> Options::GetOptions(){
         OptionItem *opt= new OptionItem();
 
         while (!in.atEnd()) {
-            std::string line = in.readLine().toStdString();
-            if(line.length() > 0) {
-                size_t sep = line.find("=");
-                if(sep != line.npos) {
-                    std::string lhs = line.substr(0,sep);
-                    std::string rhs = line.substr(sep+1);
-
-                    if     (lhs == "name")     {
-                        if (rhs == ""){
-                            continue;
-                        }
-                                opt->setProperty("name", rhs.c_str());
-                    }
-                    else if(lhs == "desc")  opt->setProperty("desc", rhs.c_str());
-                    else if(lhs == "call")  opt->setProperty("call", rhs.c_str());
-
-                    else std::cout << "ignoring unknown parameter \"" << line
-                                   << "\" in file \"" << f << "\"" << std::endl;
-                }
+            QString line = in.readLine();
+            QStringList parts = line.split("=");
+            if(parts.length() != 2){
+                qDebug() << "wrong format on " << line;
+                continue;
             }
-            else {
-                std::cout << "ignoring malformed line \"" << line
-                          << "\" in file \"" << f << "\"" << std::endl;
+            QString lhs= parts.at(0);
+            QString rhs= parts.at(1);
+            QSet<QString> known = {"name","desc","call"};
+            if (known.contains(lhs)){
+                opt->setProperty(lhs.toUtf8(), rhs);
             }
         }
         if(opt->ok())
             result.append(opt);
-
     }
     return result;
 }
