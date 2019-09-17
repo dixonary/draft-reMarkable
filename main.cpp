@@ -21,9 +21,7 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("screenGeometry", app.primaryScreen()->geometry());
     QList<QObject*> list = options.GetOptions();
     view.rootContext()->setContextProperty("options", QVariant::fromValue(list));
-    view.load(QUrl("qrc:/qml/Main.qml"));
-
-
+    view.load(QUrl("qrc:/Main.qml"));
 
     return app.exec();
 }

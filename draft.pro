@@ -26,9 +26,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
+    option_item.h \
     options.h
 
 SOURCES += main.cpp \
+    option_item.cpp \
     options.cpp
 
 # Additional import path used to resolve QML modules in Qt Creator's code model

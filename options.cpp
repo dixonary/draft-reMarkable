@@ -13,8 +13,6 @@
 // Create options and add them to the screen.
 Options::Options()
 {
-
-
 }
 
 QList<QObject*> Options::GetOptions(){
