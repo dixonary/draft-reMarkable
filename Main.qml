@@ -4,14 +4,13 @@ import QtQuick.Window 2.11
 import QtQuick.Layouts 1.3
 
 Window {
-
     id: canvas
     width: screenGeometry.width
     height: screenGeometry.height
     visible: true
 
-    Rectangle{
-        id:r
+    Rectangle {
+        id:body
         anchors.fill: parent
 
         Timer{
@@ -22,11 +21,10 @@ Window {
             onTriggered:
             {
                 canvas.visible = true
-                r.update()
-                console.log("update trigger")
+                body.update()
             }
         }
-        Rectangle {
+        Item {
             id:header
             height: 80
             anchors.left: parent.left
@@ -34,20 +32,62 @@ Window {
             anchors.top: parent.top
 
             Text{
-                text: "reDrift"
+                text: "draft launcher"
                 anchors.centerIn: parent
 
                 font.family:"Noto Serif"
                 font.pixelSize:30
                 font.bold: true
             }
+            Rectangle{
+                anchors.left:parent.left
+                anchors.right:parent.right
+                anchors.bottom:parent.bottom
+                anchors.margins: 10
+                height: 5
+                color: "black"
+            }
         }
+        Item {
+            id:footer
+            height:40
+
+            anchors{
+                bottom: parent.bottom
+                left:parent.left
+                right:parent.right
+            }
+
+            Rectangle{
+                anchors.left:parent.left
+                anchors.right:parent.right
+                anchors.top:parent.top
+                anchors.leftMargin: 10
+                anchors.rightMargin: 10
+                height: 5
+                color: "black"
+            }
+
+            Text{
+                text: controller.getVersion()
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+                anchors.margins:10
+
+                font.family:"Noto Serif"
+                font.pixelSize:15
+                font.bold: true
+            }
+        }
+
+
         Item {
 
             anchors.top: header.bottom
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.bottom: parent.bottom
+            anchors.margins: 15
 
             ListView {
                 id:optionsArea

@@ -1,3 +1,5 @@
+system(./makeversion.sh) QMAKE_EXTRA_TARGETS += version.h
+PRE_TARGETDEPS += version.h
 QT += quick
 QT -= GLES
 CONFIG += c++11
@@ -27,7 +29,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 HEADERS += \
     option_item.h \
-    options.h
+    options.h \
+    version.h
 
 SOURCES += main.cpp \
     option_item.cpp \

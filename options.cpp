@@ -1,9 +1,4 @@
 #include "options.h"
-#include <dirent.h>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <algorithm>
 #include <QIODevice>
 #include <QFile>
 #include <QTextStream>
@@ -11,24 +6,18 @@
 #include <QDir>
 #include <QSet>
 #include <QDebug>
-
-// Create options and add them to the screen.
-Options::Options()
-{
-}
+#include "version.h"
 
 QList<QObject*> Options::GetOptions(){
+
     QString configDir = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-    std::vector<std::string> filenames;
     QList<QObject*> result;
     // If the config directory doesn't exist,
     // then print an error and stop.
-
-
     QDir directory(configDir);
     if (!directory.exists() || configDir.isEmpty())
     {
-        Options::error("Failed to read directory - it does not exist.> " + configDir.toStdString());
+        qCritical() << "Failed to read directory - it does not exist.> " << configDir;
         return result;
     }
 
@@ -37,13 +26,13 @@ QList<QObject*> Options::GetOptions(){
 
     auto images = directory.entryInfoList(QDir::NoFilter,QDir::SortFlag::Name);
     foreach(QFileInfo fi, images) {
-        auto f = fi.absoluteFilePath().toStdString();
+        auto f = fi.absoluteFilePath();
 
-        std::cout << "parsing file " << f << std::endl;
+        qDebug() << "parsing file " << f;
 
         QFile file(fi.absoluteFilePath());
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            Options::error("Couldn't find the file " + f+ ".");
+            qCritical() << "Couldn't find the file " << f;
             continue;
         }
 
@@ -55,7 +44,7 @@ QList<QObject*> Options::GetOptions(){
             QString line = in.readLine();
             QStringList parts = line.split("=");
             if(parts.length() != 2){
-                qDebug() << "wrong format on " << line;
+                qWarning() << "wrong format on " << line;
                 continue;
             }
             QString lhs= parts.at(0);
@@ -71,10 +60,9 @@ QList<QObject*> Options::GetOptions(){
     return result;
 }
 
-
-
-void Options::error(std::string text) {
-    std::cerr << "!! Error: " << text << std::endl;
+QString Options::getVersion()
+{
+    return VERSION;
 }
 
 

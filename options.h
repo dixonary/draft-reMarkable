@@ -1,16 +1,14 @@
 #pragma once
 
 #include <QObject>
-#include <stdlib.h>
 #include "option_item.h"
 
-class Options
+class Options : public QObject
 {
+    Q_OBJECT
+
 public:
-    Options();
+    explicit Options(QObject *parent = 0):QObject(parent){}
     QList<QObject*> GetOptions();
-private:
-    bool read_directory(const std::string name, std::vector<std::string>& files);
-    void error(std::string text);
-    void createOption(OptionItem &option, int index);
+    Q_INVOKABLE QString getVersion();
 };

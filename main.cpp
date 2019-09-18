@@ -16,11 +16,15 @@ int main(int argc, char *argv[])
 
     QGuiApplication app(argc, argv);
     QQmlApplicationEngine view;
-    Options options;
+    Options controller;
     qmlRegisterType<OptionItem>();
+    qmlRegisterType<Options>();
+    QList<QObject*> list = controller.GetOptions();
+
     view.rootContext()->setContextProperty("screenGeometry", app.primaryScreen()->geometry());
-    QList<QObject*> list = options.GetOptions();
     view.rootContext()->setContextProperty("options", QVariant::fromValue(list));
+    view.rootContext()->setContextProperty("controller", &controller);
+
     view.load(QUrl("qrc:/Main.qml"));
 
     return app.exec();
