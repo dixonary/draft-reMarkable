@@ -5,9 +5,7 @@ Description=draft launcher
 After=home.mount
 
 [Service]
-ExecStart=/usr/bin/draft
+ExecStart=/opt/bin/draft
 
 [Install]
 WantedBy=multi-user.target
-
-
