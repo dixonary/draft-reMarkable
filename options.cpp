@@ -8,7 +8,7 @@
 #include <QDebug>
 #include "version.h"
 
-QList<QObject*> Options::GetOptions(){
+QList<QObject*> Options::getOptions(){
 
     QString configDir = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
     QList<QObject*> result;

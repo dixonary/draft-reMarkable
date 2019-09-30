@@ -19,10 +19,8 @@ int main(int argc, char *argv[])
     Options controller;
     qmlRegisterType<OptionItem>();
     qmlRegisterType<Options>();
-    QList<QObject*> list = controller.GetOptions();
 
     view.rootContext()->setContextProperty("screenGeometry", app.primaryScreen()->geometry());
-    view.rootContext()->setContextProperty("options", QVariant::fromValue(list));
     view.rootContext()->setContextProperty("controller", &controller);
 
     view.load(QUrl("qrc:/Main.qml"));

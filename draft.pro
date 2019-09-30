@@ -3,6 +3,7 @@ PRE_TARGETDEPS += version.h
 QT += quick
 QT -= GLES
 CONFIG += c++11
+CONFIG += optimize_full
 
 linux-oe-g++ {
     message("rm")

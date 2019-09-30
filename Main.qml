@@ -12,17 +12,17 @@ Window {
     Rectangle {
         id:body
         anchors.fill: parent
+        function redraw() {
+            canvas.visible = true
+            body.update()
+        }
 
         Timer{
             id: redraw_timer
             interval: 300
             repeat: false
 
-            onTriggered:
-            {
-                canvas.visible = true
-                body.update()
-            }
+            onTriggered: redraw()
         }
         Item {
             id:header
@@ -94,9 +94,9 @@ Window {
                 spacing: 15
                 anchors.fill:parent
                 interactive: false
-                model: options
-
+                model: controller.getOptions();
                 delegate: Rectangle{
+                    id:menu_item
                     height:150
                     border.color: "black"
                     border.width: 2
@@ -104,6 +104,21 @@ Window {
                     anchors.left: parent.left
                     anchors.right: parent.right
                     anchors.margins: 10
+                    states: [
+                    State {
+                           name:"normal"
+                           PropertyChanges {
+                               target: menu_item
+                               color: "white"
+                           }
+                        },
+                    State {
+                           name:"clicked"
+                           PropertyChanges {
+                               target: menu_item
+                               color: "gray"
+                           }
+                        }]
 
                     Text{
                         font.pixelSize: 70
@@ -127,12 +142,16 @@ Window {
                     }
                     MouseArea {
                         anchors.fill: parent
+                        onPressed: menu_item.state = "clicked"
+                        onReleased: menu_item.state = "normal"
                         onClicked: {
-                            //disable events
-                            canvas.visible = false
+                           optionsArea.currentIndex = index
+                           canvas.visible = false
+                            //Qt.connect()
                             //blocking call
-                            model.modelData.execute()
-                            redraw_timer.start()
+                           model.modelData.execute()
+                            //redraw_timer.start()
+                           Qt.callLater(body.redraw)
                         }
                     }
                 }
