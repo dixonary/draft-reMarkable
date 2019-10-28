@@ -1,31 +1,29 @@
 #include <QtQuick>
-//#include <QtGui>
-//#include <QtPlugin>
-#include "mainview.h"
 #include "options.h"
-#include "handler.h"
-
+#ifdef RM
+#include <QtPlugin>
 Q_IMPORT_PLUGIN(QsgEpaperPlugin)
+#endif
 
 int main(int argc, char *argv[])
 {
+#ifdef RM
     qputenv("QMLSCENE_DEVICE", "epaper");
     qputenv("QT_QPA_PLATFORM", "epaper:enable_fonts");
     qputenv("QT_QPA_EVDEV_TOUCHSCREEN_PARAMETERS", "rotate=180");
-
-    system("/usr/bin/button-capture &");
+    qputenv("QT_QPA_GENERIC_PLUGINS", "evdevtablet");
+#endif
 
     QGuiApplication app(argc, argv);
-    MainView view;
-
-    srand(time(NULL));
+    QQmlApplicationEngine view;
+    Options controller;
+    qmlRegisterType<OptionItem>();
+    qmlRegisterType<Options>();
 
     view.rootContext()->setContextProperty("screenGeometry", app.primaryScreen()->geometry());
-    view.engine()->addImportPath(QStringLiteral(DEPLOYMENT_PATH));
-    view.setSource(QDir(DEPLOYMENT_PATH).filePath("qml/Main.qml"));
-    view.show();
+    view.rootContext()->setContextProperty("controller", &controller);
 
-    Options options(&view, &app);
+    view.load(QUrl("qrc:/Main.qml"));
 
     return app.exec();
 }

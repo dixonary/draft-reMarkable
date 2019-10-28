@@ -1,120 +1,68 @@
 #include "options.h"
-#include "handler.h"
-#include <dirent.h>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <QtQuick>
-#include <algorithm>
+#include <QIODevice>
+#include <QFile>
+#include <QTextStream>
+#include <QStandardPaths>
+#include <QDir>
+#include <QSet>
+#include <QDebug>
+#include "version.h"
 
-const std::string configDir = "/etc/draft";
+QList<QObject*> Options::getOptions(){
 
-// Create options and add them to the screen.
-Options::Options(MainView* mainView, QGuiApplication* app) :
-    mainView(mainView),
-    optionsView(mainView->rootObject()->findChild<QQuickItem*>("optionsArea")),
-    app(app)
-{
-
-    std::vector<std::string> filenames;
-
+    QString configDir = QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+    QList<QObject*> result;
     // If the config directory doesn't exist,
     // then print an error and stop.
-    if(!Options::read_directory(configDir, filenames)) {
-        Options::error("Failed to read directory - it does not exist.");
-        return;
+    QDir directory(configDir);
+    if (!directory.exists() || configDir.isEmpty())
+    {
+        qCritical() << "Failed to read directory - it does not exist.> " << configDir;
+        return result;
     }
 
-    std::sort(filenames.begin(), filenames.end());
 
-    for(std::string f : filenames) {
+    directory.setFilter( QDir::Files | QDir::NoSymLinks | QDir::NoDot | QDir::NoDotDot);
 
-        std::cout << "parsing file " << f << std::endl;
-        QFile file((configDir + "/" + f).c_str());
+    auto images = directory.entryInfoList(QDir::NoFilter,QDir::SortFlag::Name);
+    foreach(QFileInfo fi, images) {
+        auto f = fi.absoluteFilePath();
+
+        qDebug() << "parsing file " << f;
+
+        QFile file(fi.absoluteFilePath());
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            Options::error("Couldn't find the file " + f + ".");
-            break;
+            qCritical() << "Couldn't find the file " << f;
+            continue;
         }
 
         QTextStream in(&file);
 
-        OptionItem opt;
+        OptionItem *opt= new OptionItem();
 
         while (!in.atEnd()) {
-            std::string line = in.readLine().toStdString();
-            if(line.length() > 0) {
-                size_t sep = line.find("=");
-                if(sep != line.npos) {
-                    std::string lhs = line.substr(0,sep);
-                    std::string rhs = line.substr(sep+1);
-
-                    if     (lhs == "name")     opt.name    = rhs;
-                    else if(lhs == "desc")     opt.desc    = rhs;
-                    else if(lhs == "imgFile")  opt.imgFile = rhs;
-                    else if(lhs == "call")     opt.call    = rhs;
-                    else if(lhs == "term")     opt.term    = rhs;
-                    else std::cout << "ignoring unknown parameter \"" << line
-                                   << "\" in file \"" << f << "\"" << std::endl;
-                }
+            QString line = in.readLine();
+            QStringList parts = line.split("=");
+            if(parts.length() != 2){
+                qWarning() << "wrong format on " << line;
+                continue;
             }
-            else {
-                std::cout << "ignoring malformed line \"" << line
-                          << "\" in file \"" << f << "\"" << std::endl;
+            QString lhs= parts.at(0);
+            QString rhs= parts.at(1);
+            QSet<QString> known = {"name","desc","call"};
+            if (known.contains(lhs)){
+                opt->setProperty(lhs.toUtf8(), rhs);
             }
         }
-
-        if(opt.call == "" || opt.term == "") continue;
-        createOption(opt, optionList.size());
-        optionList.push_back(opt);
-
+        if(opt->ok())
+            result.append(opt);
     }
-
+    return result;
 }
 
-void Options::createOption(OptionItem &option, size_t index) {
-
-    QQuickView* opt  = new QQuickView();
-    opt->setSource(QDir(DEPLOYMENT_PATH).filePath("qml/MenuItem.qml"));
-    opt->show();
-
-    QQuickItem*    root = opt->rootObject();
-    root->setProperty("itemNumber", QVariant(index));
-    root->setParentItem(optionsView);
-
-    root->setProperty("t_name",QVariant(option.name.c_str()));
-    root->setProperty("t_desc",QVariant(option.desc.c_str()));
-    root->setProperty("t_imgFile",QVariant(("file://"+configDir+"/icons/"+option.imgFile+".png").c_str()));
-
-    QObject* mouseArea = root->children().at(0);
-    Handler* handler = new Handler(option.call, option.term, app, mainView, mouseArea);
-    root->children().at(0)->installEventFilter(handler);
-
-    option.object = opt;
-    option.handler = handler;
-}
-
-void Options::error(std::string text) {
-    std::cout << "!! Error: " << text << std::endl;
-}
-
-
-// Stolen shamelessly from Martin Broadhurst
-bool Options::read_directory(const std::string name,
-                             std::vector<std::string>& filenames)
+QString Options::getVersion()
 {
-    DIR* dirp = opendir(name.c_str());
-    if(dirp == nullptr) {
-        return false;
-    }
-
-    struct dirent * dp;
-    while ((dp = readdir(dirp)) != NULL) {
-        std::string dn = dp->d_name;
-
-        if(dn == "." || dn == ".."|| dn == "icons") continue;
-
-        filenames.push_back(dn);
-    }
-    closedir(dirp);
-    return true;
+    return VERSION;
 }
+
+

@@ -1,9 +1,22 @@
+system(./makeversion.sh) QMAKE_EXTRA_TARGETS += version.h
+PRE_TARGETDEPS += version.h
 QT += quick
+QT -= GLES
 CONFIG += c++11
-LIBS += -lqsgepaper
+CONFIG += optimize_full
+
+linux-oe-g++ {
+    message("rm")
+    LIBS += -lqsgepaper
+    DEFINES += RM
+}
 
 TARGET = draft
-
+DESTDIR = bin
+OBJECTS_DIR = obj
+DEPLOYMENT_PATH=/home/root
+INSTALLS += target
+target.path = /home/root
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -16,48 +29,18 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 HEADERS += \
-    mainview.h \
+    option_item.h \
     options.h \
-    handler.h
+    version.h
 
 SOURCES += main.cpp \
-    mainview.cpp \
-    options.cpp \
-    handler.cpp
-
-DEPLOYMENT_PATH = /usr/share/$$TARGET
-DEFINES += DEPLOYMENT_PATH=\\\"$$DEPLOYMENT_PATH\\\"
-DEFINES += QML_FOLDER=\\\"qml\\\"
-
-js.files = js/Main.js
-js.path == $$DEPLOYMENT_PATH/js
-INSTALLS += js
-
-qml.files = qml/Main.qml
-qml.files+= qml/MenuItem.qml
-qml.path == $$DEPLOYMENT_PATH/qml
-INSTALLS += qml
-
-
-# Installs /etc/draft and /lib/systemd/system/draft.service.
-configFiles.files = extra-files/draft
-configFiles.path  = /etc/
-INSTALLS += configFiles
-
-service.files = extra-files/draft.service
-service.path=/lib/systemd/system/
-INSTALLS += service
+    option_item.cpp \
+    options.cpp
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
 
-
-
-target.path = /usr/bin
-INSTALLS += target
-
-DISTFILES += \
-    js/Main.js \
-    qml/MenuItem.qml
+RESOURCES += \
+    qml.qrc
 
