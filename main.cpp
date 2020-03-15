@@ -23,9 +23,10 @@ int main(int argc, char *argv[])
     view.rootContext()->setContextProperty("screenGeometry", app.primaryScreen()->geometry());
     view.engine()->addImportPath(QStringLiteral(DEPLOYMENT_PATH));
     view.setSource(QDir(DEPLOYMENT_PATH).filePath("qml/Main.qml"));
-    view.show();
 
     Options options(&view, &app);
+
+    view.show();
 
     return app.exec();
 }
