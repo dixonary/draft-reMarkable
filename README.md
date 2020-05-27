@@ -5,7 +5,7 @@ A launcher for the reMarkable tablet, which wraps around the standard interface.
 
 * * *
 
-## Set-up
+## QT Creator Set-up
 
 **This information is quite vague. Reddit user /u/prpletentacle wrote up their process for setting up Draft+rM, with the Plato app, here: https://www.reddit.com/r/RemarkableTablet/comments/bkbps9/how_to_install_plato_reader_and_add_it_to_draft/?st=jvp0mqus&sh=0651e353**
 
@@ -56,3 +56,65 @@ Draft is configured through the files in the `/etc/draft` directory. They consis
 `imgFile`: An icon to use. It will look for a PNG image with that name in the `/etc/draft/icons` directory.
 
 *NOTE: Be sure not to leave any spaces around the "=" sign in the config lines, else the files may not parse correctly and your options may not show up!*
+
+## Build setup without QT Creator
+
+These steps should help you automate a build setup. This way:
+* You can build draft with a script (and without needing a GUI)
+* You can build the software without needing the device plugged in/can package and deploy however you want
+* You can leverage the cross compiler to build whatever software you want (see sidenote in step 3 below)
+
+Note: NixOS has a package called [remarkable-toolchain](https://github.com/NixOS/nixpkgs/tree/master/pkgs/development/tools/misc/remarkable/remarkable-toolchain) in the unstable channel (aka not in 20.03 stock) that lets you skip the first step (although it doesn't give you a .nix-shell and you need to know where to find the files for step 2).
+
+1. Download and install:
+```
+$ (ensure prereqs exist: python, libarchive, file, )
+$ mkdir rm-toolchain
+$ wget https://remarkable.engineering/oecore-x86_64-cortexa9hf-neon-toolchain-zero-gravitas-1.8-23.9.2019.sh
+$ ./install-toolchain -D -y -d rm-toolchain
+```
+`-D` turns on set -x for the script (bash print debugging); `-y` says yes to everything; `-d` tells it where to install.
+This file is a shell script with an embedded tar archive.  The script unpacks the archive and then edits shell scripts to contain the correct paths based on where you've installed it.
+
+2. Activate environment:
+The installed toolchain contains a [sysroot](https://doc.qt.io/qt-5/configure-linux-device.html), a package of binaries for cross compiling and some compiler/qt related environment variables setup by some shell scripts. There's probably plenty of redundant stuff here too.
+
+Activate:
+
+```
+$ . rm-toolchain/environment-setup-cortexa9hf-neon-oe-linux-gnueabi
+```
+
+Running `env` should yield a bunch of variables and a path that looks through the toolchain packages first. 
+
+The next step will need to be run in the same terminal session to preserve env variables.
+
+3. Build
+
+```
+$ git clone https://www.github.com/dixionary/draft-reMarkable
+$ cd draft-reMarkable
+$ qmake && make
+$ file draft        # should say it's a 32-bit ARM executable
+```
+
+Sidenote: An example using a non-QT app that leverages the $CONFIGURE_FLAGS variable set up in the previous step:
+```
+wget https://mosh.org/mosh-1.3.2.tar.gz
+tar -zxvf mosh-1.3.2.tar.gz
+cd mosh-1.3.2
+./configure $CONFIGURE_FLAGS
+make
+```
+Again you can run `file src/frontend/mosh-client` to ensure it's an ARM binary that was produced.
+
+4. Deploy
+Unfortunately this is the one step I had to do manually. QT Creator uses draft.pro to build and then package and deploy the app onto the device. Without the IDE, draft will need the reMarkable to have the files placed according to the steps found in [draft.pro]:
+* `draft` binary goes in /usr/bin
+* `mkdir -p /usr/share/draft/qml; mkdir -p /usr/share/draft js` all of the files in the `qml/` and `js/` directories should go into these folders
+* Copy `extra-files/draft/` into `/etc/` so `/etc/draft/01-xochitl` etc exist. These are the files that define which apps to run and how, in addition to icons.
+* Copy `extra-files/draft.service` to `/lib/systemd/system/draft.service` to install the systemd file. This will install
+  draft as a system service. Then you'll need to `systemctl disable xochitl && systemctl enable draft` to replace
+`xochitl` with `draft` as the startup app. Reboot, or to see it take effect right away, do `systemctl stop xochitl && systemctl start draft`.
+
+You can view debug logs for draft and any app that draft tries to launch by running `journalctl -fu draft`.
