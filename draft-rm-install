@@ -1,0 +1,21 @@
+#!/bin/bash
+# This will deploy the draft-reMarkable service to a remote machine.
+# Use at your own peril. May prompt you for password, which can be found
+# in your device's standard interface. For 2.0 this is in Menu -> Settings
+# -> About, scroll to the bottom.
+# Source files are in $base, which by default is in the result directory.
+
+# Usage: 
+( [ -z "$1" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ] ) && 
+    echo "usage: $0 REMARKABLE_IP" &&  
+    echo "type '$0 --help' or '$0 -h' to see this message." && 
+    exit
+
+set -e
+set -x
+base=result
+device=$1
+
+scp -prv $base/{etc,lib,usr} root@$device:/
+
+ssh root@$device "set -x && systemctl start draft && systemctl stop xochitl && set +x"

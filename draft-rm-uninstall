@@ -1,0 +1,17 @@
+#!/bin/bash
+# This will undeploy the draft-reMarkable service from a remote machine.
+# Usage:
+( [ -z "$1" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ] ) && 
+    echo "usage: $0 REMARKABLE_IP" && 
+    echo "type '$0 --help' or '$0 -h' to see this message." && 
+    exit
+
+device=$1
+set -e
+ssh root@$device <<EOH
+set -x && 
+systemctl start xochitl && 
+systemctl stop draft && 
+rm -rf /lib/systemd/system/draft.service 
+/etc/draft /usr/share/draft /usr/bin/draft
+EOH
