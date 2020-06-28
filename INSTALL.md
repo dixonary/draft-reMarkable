@@ -2,6 +2,14 @@
 
 Steps to build and install without using scripts
 
+- [Manual build setup without QT Creator](#manual-build-setup-without-qt-creator)
+  * [1. Download and install source and toolchain](#1-download-and-install-source-and-toolchain)
+  * [2. Activate environment](#2-activate-environment)
+  * [3. Build](#3-build)
+  * [4. Deploy](#4-deploy)
+    + [File reference](#file-reference)
+- [Configure draft](#configure-draft)
+
 ### 1. Download and install source and toolchain
 
 ```
