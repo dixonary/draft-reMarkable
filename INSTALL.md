@@ -62,19 +62,3 @@ If you use the scripts above you shouldn't need to worry about these.
   draft as a system service. Then you'll need to `systemctl disable xochitl && systemctl enable draft` to replace
 `xochitl` with `draft` as the startup app. Reboot, or to see it take effect right away, do `systemctl stop xochitl && systemctl start draft`.
 
-* * * 
-## Configure draft
-
-Draft is configured through the files in the `/etc/draft` directory. They consist of a few simple lines. All of them are needed otherwise the option will not show up in the launcher.
-
-`title`: Big word, left hand side of the screen.
-
-`desc`: Smaller words, left hand side of the screen.
-
-`call`: The shell command to run when the option is pressed.
-
-`term`: The shell command to run while the option is running, to close it. (or it can do whatever you want really!) This won't do anything without `button-capture` installed.
-
-`imgFile`: An icon to use. It will look for a PNG image with that name in the `/etc/draft/icons` directory.
-
-*NOTE: Be sure not to leave any spaces around the "=" sign in the config lines, else the files may not parse correctly and your options may not show up!*

@@ -101,15 +101,6 @@ Draft should start automatically. You're set! You can view debug logs for draft 
 
 To remove, you can run the uninstall script in the same way.
 
-#### File reference
-If you use the scripts above you shouldn't need to worry about these.
-* `draft` binary goes in /usr/bin
-* `mkdir -p /usr/share/draft/qml; mkdir -p /usr/share/draft js` all of the files in the `qml/` and `js/` directories should go into these folders
-* Copy `extra-files/draft/` into `/etc/` so `/etc/draft/01-xochitl` etc exist. These are the files that define which apps to run and how, in addition to icons (see above for full details).
-* Copy `extra-files/draft.service` to `/lib/systemd/system/draft.service` to install the systemd file. This will install
-  draft as a system service. Then you'll need to `systemctl disable xochitl && systemctl enable draft` to replace
-`xochitl` with `draft` as the startup app. Reboot, or to see it take effect right away, do `systemctl stop xochitl && systemctl start draft`.
-
 * * * 
 ## Configuration Files
 
