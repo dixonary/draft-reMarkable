@@ -98,9 +98,9 @@ Run the install script with your reMarkable's IP address ([more details here](ht
 $ ./draft-rm-install 172.17.0.3
 ```
 
-Draft should start automatically. You're set! You can view debug logs for draft and any app that draft tries to launch by running `journalctl -fu draft`.
+You will be prompted for confirmation on downloading and installing and possibly for your device's root password. (You can preempt the prompts by calling the script with `-y`.) After installation draft should start automatically. You're set! You can view debug logs for draft and any app that draft tries to launch by running `journalctl -fu draft`.
 
-To remove, you can run the uninstall script in the same way.
+To remove, you can run the `draft-rm-uninstall` script in the same way.
 
 * * * 
 ## Configuration Files
