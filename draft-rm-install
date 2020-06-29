@@ -46,7 +46,7 @@ fi
 echo "Copying files to /home/root/draft"
 set -x
 ssh root@$device "mkdir -p /home/root/draft"
-scp -prv $base/{etc,lib,usr} root@$device:/home/root/draft
+scp -pr $base/{etc,lib,usr} root@$device:/home/root/draft
 set +x
 
 if [ "$answer" != "Y" ]; then
@@ -54,6 +54,7 @@ if [ "$answer" != "Y" ]; then
     [ $linkstep != "Y" -a $linkstep !='y' ] && echo "Cancelled by user" && exit 1
 fi 
 
+set -x
 ssh root@$device <<EOH
 set -ex
 
