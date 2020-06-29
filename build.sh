@@ -6,7 +6,7 @@ qmake
 make
 set -x
 deploy=result
-mkdir -p $deploy/usr/bin $deploy/usr/share/draft/ deploy/etc/ $deploy/lib/systemd/system/
+mkdir -p $deploy/usr/bin $deploy/usr/share/draft/ $deploy/etc/ $deploy/lib/systemd/system/
 mv draft $deploy/usr/bin
 mv {qml,js} $deploy/usr/share/draft/
 mv extra-files/draft $deploy/etc/

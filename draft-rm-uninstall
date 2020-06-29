@@ -9,9 +9,8 @@
 device=$1
 set -e
 ssh root@$device <<EOH
-set -x && 
-systemctl start xochitl && 
-systemctl stop draft && 
-rm -rf /lib/systemd/system/draft.service 
-/etc/draft /usr/share/draft /usr/bin/draft
+set -ex
+systemctl start xochitl
+systemctl stop draft
+rm -rf /lib/systemd/system/draft.service /etc/draft /usr/share/draft /usr/bin/draft
 EOH
