@@ -1,30 +1,63 @@
-#!/bin/bash
 # This will deploy the draft-reMarkable service to a remote machine.
 # Use at your own peril. May prompt you for password, which can be found
 # in your device's standard interface. For 2.0 this is in Menu -> Settings
 # -> About, scroll to the bottom.
 # Source files are in $base, which by default is in the result directory.
 
-# Usage: 
-( [ -z "$1" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ] ) && 
-    echo "usage: $0 REMARKABLE_IP" &&  
-    echo "type '$0 --help' or '$0 -h' to see this message." && 
-    exit
+usage() {
+    echo "usage: $0 [-y] REMARKABLE_IP"
+    echo
+    echo "Deploys draft to REMARKABLE_IP. Files are installed into /home/root/draft, and linked to their proper
+    locations."
+    echo
+    echo "  -y Automatic yes to all prompts (not including password prompts)"
+    echo
+    echo "Type '$0 --help' or '$0 -h' to see this message."
+}
 
-set -ex
+while getopts ":y" option; do
+    case $option in
+    y)
+        answer="Y"
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+    esac
+done
+
+if [ $OPTIND != 1 ]; then
+    usage
+    exit 1
+fi
+
+set -e
 base=result
 device=$1
 
-ssh root@$device "mkdir -p /home/root/draft"
+if [ "$answer" != "Y" ]; then
+    read -p "Copy draft files to /home/root/draft on $device? (Y/n): " copystep
+    [ $copystep != "Y" -a $copystep != 'y' ] && exit 1
+fi 
 
+echo "Copying files to /home/root/draft"
+set -x
+ssh root@$device "mkdir -p /home/root/draft"
 scp -prv $base/{etc,lib,usr} root@$device:/home/root/draft
+set +x
+
+if [ "$answer" != "Y" ]; then
+    read -p "Link files and start/stop services on $device? (Y/n): " linkstep
+    [ $linkstep != "Y" -a $linkstep !='y' ] && exit 1
+fi 
 
 ssh root@$device <<EOH
 set -ex
 
 cd /home/root/draft
-find {etc,usr,lib} -type d -exec mkdir -p /{} \;
-find {etc,usr,lib} -type f -exec ln -s /home/root/draft/{} /{} \;
+find etc usr lib -type d -exec mkdir -p /{} \;
+find etc usr lib -type f -exec ln -s /home/root/draft/{} /{} \;
 
 systemctl enable draft
 systemctl start draft
