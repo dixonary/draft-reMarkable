@@ -26,6 +26,8 @@ cd /home/root/draft
 find {etc,usr,lib} -type d -exec mkdir -p /{} \;
 find {etc,usr,lib} -type f -exec ln -s /home/root/draft/{} /{} \;
 
+systemctl enable draft
 systemctl start draft
+systemctl disable xochitl
 systemctl stop xochitl
 EOH
