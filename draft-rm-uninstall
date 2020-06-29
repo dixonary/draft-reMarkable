@@ -17,6 +17,7 @@ while getopts ":y" option; do
     case $option in
     y)
         answer="Y"
+        shift
         ;;
     *)
         usage
@@ -25,7 +26,7 @@ while getopts ":y" option; do
     esac
 done
 
-if [ $OPTIND != 1 ]; then
+if [ $OPTIND < 1 || $OPTIND > 2 ]; then
     usage
     exit 1
 fi
