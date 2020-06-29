@@ -11,11 +11,21 @@
     echo "type '$0 --help' or '$0 -h' to see this message." && 
     exit
 
-set -e
-set -x
+set -ex
 base=result
 device=$1
 
-scp -prv $base/{etc,lib,usr} root@$device:/
+ssh root@$device "mkdir -p /home/root/draft"
 
-ssh root@$device "set -x && systemctl start draft && systemctl stop xochitl && set +x"
+scp -prv $base/{etc,lib,usr} root@$device:/home/root/draft
+
+ssh root@$device <<EOH
+set -ex
+
+cd /home/root/draft
+find {etc,usr,lib} -type d -exec mkdir -p /{} \;
+find {etc,usr,lib} -type f -exec ln -s /home/root/draft/{} /{} \;
+
+systemctl start draft
+systemctl stop xochitl
+EOH

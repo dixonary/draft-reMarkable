@@ -1,5 +1,6 @@
 #!/bin/bash
-# This will undeploy the draft-reMarkable service from a remote machine.
+# This will undeploy the draft-reMarkable service from a remote machine by
+# stopping services and removing symlinks. /home/root/draft won't be modified.
 # Usage:
 ( [ -z "$1" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ] ) && 
     echo "usage: $0 REMARKABLE_IP" && 
