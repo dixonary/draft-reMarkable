@@ -1,3 +1,4 @@
+#!/bin/bash
 # This will undeploy the draft-reMarkable service from a remote machine by
 # stopping services and removing symlinks. /home/root/draft won't be modified.
 
