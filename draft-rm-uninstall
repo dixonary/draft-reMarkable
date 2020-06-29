@@ -32,8 +32,8 @@ fi
 device=$1
 
 if [ "$answer" != "Y" ]; then
-    read -p "Unlink draft and disable service to $device? (Y/n): " unlinkstep
-    [ $unlinkstep != "Y" -a $unlnkstep != 'y' ] && exit 1
+    read -p "Unlink draft and disable service from $device? (Y/n): " unlinkstep
+    [ $unlinkstep != "Y" -a $unlinkstep != "y" ] && exit 1
 fi 
 
 set -e
