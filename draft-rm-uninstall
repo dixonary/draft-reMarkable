@@ -1,0 +1,47 @@
+#!/bin/bash
+# This will undeploy the draft-reMarkable service from a remote machine by
+# stopping services and removing symlinks. /home/root/draft won't be modified.
+
+usage() {
+    echo "usage: $0 [-y] REMARKABLE_IP"
+    echo
+    echo "Undeploys draft-reMarkable service from REMARKABLE_IP by stopping services and removing symlinks."
+    echo "/home/root/draft won't be modified or removed."
+    echo
+    echo "  -y Automatic yes to all prompts"
+    echo
+    echo "Type '$0 --help' or '$0 -h' to see this message."
+}
+
+while getopts ":y" option; do
+    case $option in
+    y)
+        answer="Y"
+        shift
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+    esac
+done
+
+if [ $OPTIND < 1 || $OPTIND > 2 ]; then
+    usage
+    exit 1
+fi
+
+device=$1
+
+if [ "$answer" != "Y" ]; then
+    read -p "Unlink draft and disable service from $device? (Y/n): " unlinkstep
+    [ $unlinkstep != "Y" -a $unlinkstep != "y" ] && exit 1
+fi 
+
+set -e
+ssh root@$device <<EOH
+set -ex
+systemctl start xochitl
+systemctl stop draft
+rm -rf /lib/systemd/system/draft.service /etc/draft /usr/share/draft /usr/bin/draft
+EOH

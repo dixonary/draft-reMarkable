@@ -3,6 +3,9 @@ A launcher for the reMarkable tablet, which wraps around the standard interface.
 
 [Draft v0.2 video](https://www.youtube.com/watch?v=VEngMK54SV4)
 
+- [Build setup without QT Creator](#build-setup-without-qt-creator)
+  * [1. Download and install](#1-download-and-install)
+  * [2. Activate environment](#2-activate-environment)
 - [QT Creator Set-up](#qt-creator-set-up)
   * [1. Setup QT Creator](#1-setup-qt-creator)
   * [2. Deploy draft](#2-deploy-draft)
@@ -11,12 +14,10 @@ A launcher for the reMarkable tablet, which wraps around the standard interface.
   * [3. Enable at startup](#3-enable-at-startup)
   * [4. Restart your reMarkable](#4-restart-your-remarkable)
 - [Build setup without QT Creator](#build-setup-without-qt-creator)
-  * [1. Download and install](#1-download-and-install)
-  * [2. Activate environment](#2-activate-environment)
-  * [3. Build](#3-build)
-  * [4. Deploy](#4-deploy)
-- [Configure draft](#configure-draft)
-
+  * [1. Download and install source and toolchain](#1-download-and-install-source-and-toolchain)
+  * [2. Run build script](#2-run-build-script)
+  * [3. Deploy](#3-deploy)
+- [Configuration Files](#configuration-files)
 
 * * *
 
@@ -68,10 +69,12 @@ These steps should help you automate a build setup. This way:
 
 Note: NixOS has a package called [remarkable-toolchain](https://github.com/NixOS/nixpkgs/tree/master/pkgs/development/tools/misc/remarkable/remarkable-toolchain) in the unstable channel (aka not in 20.03 stock) that lets you skip the first step (although it doesn't give you a .nix-shell and you need to know where to find the files for step 2).
 
-### 1. Download and install
+### 1. Download and install source and toolchain
 
 ```
-$ (ensure prereqs exist: python, libarchive, file, )
+$ git clone https://github.com/dixonary/draft-reMarkable
+$ cd draft-reMarkable
+# (ensure prereqs exist before installing toolchain: python, libarchive, file)
 $ mkdir rm-toolchain
 $ wget https://remarkable.engineering/oecore-x86_64-cortexa9hf-neon-toolchain-zero-gravitas-1.8-23.9.2019.sh
 $ ./install-toolchain -D -y -d rm-toolchain
@@ -79,53 +82,28 @@ $ ./install-toolchain -D -y -d rm-toolchain
 `-D` turns on set -x for the script (bash print debugging); `-y` says yes to everything; `-d` tells it where to install.
 This file is a shell script with an embedded tar archive.  The script unpacks the archive and then edits shell scripts to contain the correct paths based on where you've installed it.
 
-### 2. Activate environment
+The installed toolchain then contains a [sysroot](https://doc.qt.io/qt-5/configure-linux-device.html), a package of binaries for cross compiling and some compiler/qt related environment variables setup by some shell scripts. There's probably plenty of redundant stuff here too.
 
-The installed toolchain contains a [sysroot](https://doc.qt.io/qt-5/configure-linux-device.html), a package of binaries for cross compiling and some compiler/qt related environment variables setup by some shell scripts. There's probably plenty of redundant stuff here too.
-
-Activate:
+### 2. Run build script
 
 ```
-$ . rm-toolchain/environment-setup-cortexa9hf-neon-oe-linux-gnueabi
+$ ./build.sh
 ```
 
-Running `env` should yield a bunch of variables and a path that looks through the toolchain packages first. 
+For information on how this works, or how to use the cross-compiler for other binaries, see INSTALL.md.
 
-The next step will need to be run in the same terminal session to preserve env variables.
-
-### 3. Build
-
+### 3. Deploy
+Run the install script with your reMarkable's IP address ([more details here](https://remarkablewiki.com/tech/ssh)).
 ```
-$ git clone https://www.github.com/dixionary/draft-reMarkable
-$ cd draft-reMarkable
-$ qmake && make
-$ file draft        # should say it's a 32-bit ARM executable
+$ ./draft-rm-install 172.17.0.3
 ```
 
-Sidenote: An example using a non-QT app that leverages the $CONFIGURE_FLAGS variable set up in the previous step:
-```
-wget https://mosh.org/mosh-1.3.2.tar.gz
-tar -zxvf mosh-1.3.2.tar.gz
-cd mosh-1.3.2
-./configure $CONFIGURE_FLAGS
-make
-```
-Again you can run `file src/frontend/mosh-client` to ensure it's an ARM binary that was produced.
+You will be prompted for confirmation on downloading and installing and possibly for your device's root password. (You can preempt the prompts by calling the script with `-y`.) After installation draft should start automatically. You're set! You can view debug logs for draft and any app that draft tries to launch by running `journalctl -fu draft`.
 
-### 4. Deploy
-
-Unfortunately this is the one step I had to do manually. QT Creator uses draft.pro to build and then package and deploy the app onto the device. Without the IDE, draft will need the reMarkable to have the files placed according to the steps found in [draft.pro]:
-* `draft` binary goes in /usr/bin
-* `mkdir -p /usr/share/draft/qml; mkdir -p /usr/share/draft js` all of the files in the `qml/` and `js/` directories should go into these folders
-* Copy `extra-files/draft/` into `/etc/` so `/etc/draft/01-xochitl` etc exist. These are the files that define which apps to run and how, in addition to icons (see above for full details).
-* Copy `extra-files/draft.service` to `/lib/systemd/system/draft.service` to install the systemd file. This will install
-  draft as a system service. Then you'll need to `systemctl disable xochitl && systemctl enable draft` to replace
-`xochitl` with `draft` as the startup app. Reboot, or to see it take effect right away, do `systemctl stop xochitl && systemctl start draft`.
-
-You can view debug logs for draft and any app that draft tries to launch by running `journalctl -fu draft`.
+To remove, you can run the `draft-rm-uninstall` script in the same way.
 
 * * * 
-## Configure draft
+## Configuration Files
 
 Draft is configured through the files in the `/etc/draft` directory. They consist of a few simple lines. All of them are needed otherwise the option will not show up in the launcher.
 

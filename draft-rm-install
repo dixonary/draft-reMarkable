@@ -1,0 +1,70 @@
+#!/bin/bash
+# This will deploy the draft-reMarkable service to a remote machine.
+# Use at your own peril. May prompt you for password, which can be found
+# in your device's standard interface. For 2.0 this is in Menu -> Settings
+# -> About, scroll to the bottom.
+# Source files are in $base, which by default is in the result directory.
+
+usage() {
+    echo "usage: $0 [-y] REMARKABLE_IP"
+    echo
+    echo "Deploys draft to REMARKABLE_IP. Files are installed into /home/root/draft, and linked to their proper
+    locations."
+    echo
+    echo "  -y Automatic yes to all prompts (not including password prompts)"
+    echo
+    echo "Type '$0 --help' or '$0 -h' to see this message."
+}
+
+while getopts ":y:" option; do
+    case $option in
+    y)
+        answer="Y"
+        shift
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+    esac
+done
+
+if [ $OPTIND < 1 || $OPTIND > 2 ]; then
+    usage
+    exit 1
+fi
+
+set -e
+base=result
+device=$1
+
+if [ "$answer" != "Y" ]; then
+    read -p "Copy draft files to /home/root/draft on $device? (Y/n): " copystep
+    [ $copystep != "Y" -a $copystep != 'y' ] && echo "Cancelled by user" && exit 1
+fi 
+
+echo "Copying files to /home/root/draft"
+set -x
+ssh root@$device "mkdir -p /home/root/draft"
+scp -pr $base/{etc,lib,usr} root@$device:/home/root/draft
+set +x
+
+if [ "$answer" != "Y" ]; then
+    read -p "Link files and start/stop services on $device? (Y/n): " linkstep
+    [ $linkstep != "Y" -a $linkstep !='y' ] && echo "Cancelled by user" && exit 1
+fi 
+
+set -x
+ssh root@$device <<EOH
+set -ex
+
+cd /home/root/draft
+find etc usr lib -type d -exec mkdir -p /{} \;
+find etc usr -type f -exec ln -s /home/root/draft/{} /{} \;
+cp lib/systemd/system/draft.service /lib/systemd/system/
+
+systemctl enable draft
+systemctl start draft
+systemctl disable xochitl
+systemctl stop xochitl
+EOH
