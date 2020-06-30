@@ -41,7 +41,7 @@ The next step will need to be run in the same terminal session to preserve env v
 ### 3. Build
 
 ```
-$ git clone https://www.github.com/dixionary/draft-reMarkable
+$ git clone https://www.github.com/dixonary/draft-reMarkable
 $ cd draft-reMarkable
 $ qmake && make
 $ file draft        # should say it's a 32-bit ARM executable
