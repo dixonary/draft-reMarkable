@@ -3,9 +3,6 @@ A launcher for the reMarkable tablet, which wraps around the standard interface.
 
 [Draft v0.2 video](https://www.youtube.com/watch?v=VEngMK54SV4)
 
-- [Build setup without QT Creator](#build-setup-without-qt-creator)
-  * [1. Download and install](#1-download-and-install)
-  * [2. Activate environment](#2-activate-environment)
 - [QT Creator Set-up](#qt-creator-set-up)
   * [1. Setup QT Creator](#1-setup-qt-creator)
   * [2. Deploy draft](#2-deploy-draft)
