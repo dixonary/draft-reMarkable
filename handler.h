@@ -8,6 +8,8 @@
 #include <time.h>
 
 extern time_t lastReturn;
+extern int gotEvents;
+extern int qSize;
 
 class Handler : public QObject
 {

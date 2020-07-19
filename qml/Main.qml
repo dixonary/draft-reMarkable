@@ -4,6 +4,7 @@ import "../js/Main.js" as MainJS
 Rectangle {
     property alias battery_level : batteryLevel.text
     property alias battery_icon : batteryIcon.source
+    property alias suspend_banner_text : suspendBanner.text
 
     id: canvas
     width: 1404
@@ -27,6 +28,22 @@ Rectangle {
         font.pixelSize: 80
         font.family:"Noto Serif"
         font.italic:true
+    }
+
+    Text {
+        id: suspendBanner
+        x: 390
+        y: 0
+        width: 625
+        height: 24
+        anchors.rightMargin: 390
+        anchors.bottomMargin: 1848
+        font.family: "Noto Serif"
+        anchors.bottom: parent.bottom
+        font.pixelSize: 30
+        font.italic: true
+        anchors.margins: {bottom:10}
+        anchors.right: parent.right
     }
 
     Text {
