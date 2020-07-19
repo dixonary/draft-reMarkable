@@ -6,6 +6,8 @@
 #include <QGuiApplication>
 #include "mainview.h"
 
+const extern std::string configDir;
+
 struct OptionItem {
     std::string name;
     std::string desc;
