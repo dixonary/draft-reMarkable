@@ -89,7 +89,7 @@ Because of limited space on the root partition, it's better to install draft to 
 
 To achieve this: 
 * `draft` binary goes in usr/bin
-* `mkdir -p usr/share/draft/qml; mkdir -p usr/share/draft js` all of the files in the `qml/` and `js/` directories should go into these folders
+* `mkdir -p usr/share/draft/qml usr/share/draft/js` all of the files in the `qml/` and `js/` directories should go into these folders
 * Copy `extra-files/draft/` into `etc/` so `/etc/draft/01-xochitl` etc exist. These are the files that define which apps to run and how, in addition to icons (see above for full details).
 * Copy `extra-files/draft.service` to `/lib/systemd/system/draft.service` to install the systemd file. 
 
