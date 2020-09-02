@@ -104,7 +104,7 @@ To remove, you can run the `draft-rm-uninstall` script in the same way.
 
 Draft is configured through the files in the `/etc/draft` directory. They consist of a few simple lines. All of them are needed otherwise the option will not show up in the launcher.
 
-`title`: Big word, left hand side of the screen.
+`name`: Big word, left hand side of the screen.
 
 `desc`: Smaller words, left hand side of the screen.
 
