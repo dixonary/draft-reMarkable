@@ -10,6 +10,7 @@
 
 time_t lastReturn;
 int qSize = 1404;
+int gotEvents = 0;
 
 Handler::Handler(std::string lT, std::string term, QGuiApplication* app, MainView* mainView, QObject* obj)
     : link(lT), term(term), ef(obj), app(app), mainView(mainView){
@@ -40,6 +41,7 @@ bool Handler::eventFilter(QObject* obj, QEvent* event)
 }
 
 void Handler::handleEvent() {
+    gotEvents = 1;
 
     std::cout << "Setting termfile /etc/draft/.terminate" << std::endl;
     std::ofstream termfile;
