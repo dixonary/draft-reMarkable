@@ -2,6 +2,9 @@ import QtQuick 2.0
 import "../js/Main.js" as MainJS
 
 Rectangle {
+    property alias battery_level : batteryLevel.text
+    property alias battery_icon : batteryIcon.source
+
     id: canvas
     width: 1404
     height: 1872
@@ -36,6 +39,41 @@ Rectangle {
         font.family:"Noto Serif"
         font.italic:true
     }
+
+    Image {
+        x: 19
+        y: 1837
+        id: batteryIcon
+        fillMode: Image.PreserveAspectFit
+        height: 10
+        width: 50
+        anchors.rightMargin: 1335
+        anchors.bottomMargin: 5
+        anchors.topMargin: 1841
+        anchors.top: parent.top
+        anchors.right: parent.right
+        anchors.bottom:parent.bottom
+        anchors.margins:15
+        source: "../extra-files/draft/icons/batteryIcon.png"
+    }
+
+    Text {
+        id: batteryLevel
+        x: 75
+        y: 1828
+        width: 428
+        height: 36
+        text: "Unable to read battery level"
+        anchors.rightMargin: 901
+        anchors.bottomMargin: 8
+        font.family: "Noto Serif"
+        anchors.bottom: parent.bottom
+        font.pixelSize: 30
+        font.italic: true
+        anchors.margins: {bottom:10}
+        anchors.right: parent.right
+    }
+
 
     Text {
         id: optionsHeading
@@ -84,3 +122,9 @@ Rectangle {
     }
 
 }
+
+/*##^##
+Designer {
+    D{i:0;formeditorZoom:0.8999999761581421}
+}
+##^##*/
