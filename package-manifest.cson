@@ -1,0 +1,22 @@
+{
+    "info": {
+        "package-name": "rm-draft",
+        "version": "0.3.0",
+        "maintainer": "Pierre-Alexis Ciavaldini <pierre-alexis@ciavaldini.fr>",
+        "description": "A launcher for the reMarkable tablet, which wraps around the standard interface.",
+        "depends": "rm-button-capture"
+    },
+    "data": {
+        "opt": {
+            "bin": {
+                "draft": "build/draft"
+            },
+            "etc": {
+                "draft": "src/extra-files/draft",
+                "systemd": {
+                    "draft.service": "src/extra-files/draft.service"
+                }
+            }
+        }
+    },
+}

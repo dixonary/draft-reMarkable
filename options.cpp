@@ -7,7 +7,7 @@
 #include <QtQuick>
 #include <algorithm>
 
-const std::string configDir = "/etc/draft";
+const std::string configDir = "/opt/etc/draft";
 
 // Create options and add them to the screen.
 Options::Options(MainView* mainView, QGuiApplication* app) :

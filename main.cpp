@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     qputenv("QT_QPA_PLATFORM", "epaper:enable_fonts");
     qputenv("QT_QPA_EVDEV_TOUCHSCREEN_PARAMETERS", "rotate=180");
 
-    system("/usr/bin/button-capture &");
+    system("systemctl start button-capture");
 
     QGuiApplication app(argc, argv);
     MainView view;
