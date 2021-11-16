@@ -3,6 +3,8 @@ A launcher for the reMarkable tablet, which wraps around the standard interface.
 
 [Draft v0.2 video](https://www.youtube.com/watch?v=VEngMK54SV4)
 
+**WARNING**: take great care if [installing on reMarkable 2](#installing-on-remarkable-2).
+
 - [QT Creator Set-up](#qt-creator-set-up)
   * [1. Setup QT Creator](#1-setup-qt-creator)
   * [2. Deploy draft](#2-deploy-draft)
@@ -115,3 +117,8 @@ Draft is configured through the files in the `/etc/draft` directory. They consis
 `imgFile`: An icon to use. It will look for a PNG image with that name in the `/etc/draft/icons` directory.
 
 *NOTE: Be sure not to leave any spaces around the "=" sign in the config lines, else the files may not parse correctly and your options may not show up!*
+
+* * *
+## Installing on reMarkable 2
+
+draft on reMarkable 2 is not natively supported. It is only made possible by the [remarkable2-framebuffer](https://github.com/ddvk/remarkable2-framebuffer) project, which is still in beta. Be sure to check over there whether your tablet version is supported.
