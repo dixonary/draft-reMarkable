@@ -64,7 +64,7 @@ These steps should help you automate a build setup. This way:
 * You can build the software without needing the device plugged in/can package and deploy however you want
 * You can leverage the cross compiler to build whatever software you want (see sidenote in step 3 below)
 
-Note: NixOS has a package called [remarkable-toolchain](https://github.com/NixOS/nixpkgs/tree/master/pkgs/development/tools/misc/remarkable/remarkable-toolchain) in the unstable channel (aka not in 20.03 stock) that lets you skip the first step (although it doesn't give you a .nix-shell and you need to know where to find the files for step 2).
+Note: NixOS has a package called [remarkable-toolchain](https://github.com/NixOS/nixpkgs/tree/master/pkgs/development/tools/misc/remarkable/remarkable-toolchain) in 20.09+ that lets you skip the first step below (in other words that package will provide you with the source and toolchain; you will need need to know where to find the files for step 2).
 
 ### 1. Download and install source and toolchain
 
@@ -73,7 +73,7 @@ $ git clone https://github.com/dixonary/draft-reMarkable
 $ cd draft-reMarkable
 # (ensure prereqs exist before installing toolchain: python, libarchive, file)
 $ mkdir rm-toolchain
-$ wget https://remarkable.engineering/oecore-x86_64-cortexa9hf-neon-toolchain-zero-gravitas-1.8-23.9.2019.sh
+$ wget https://storage.googleapis.com/remarkable-codex-toolchain/codex-x86_64-cortexa9hf-neon-rm10x-toolchain-3.1.2.sh
 $ ./install-toolchain -D -y -d rm-toolchain
 ```
 `-D` turns on set -x for the script (bash print debugging); `-y` says yes to everything; `-d` tells it where to install.
